@@ -20,30 +20,58 @@ class Variable:
         self.id = VariableGenerator.generate_var()
         self.description = description
         self.value = value
-        self.result = None
+        self.__result = value
 
-    def __str__(self) -> str:
-        return self.description
-
-    def add_as_clause(self, formula:WCNFPlus) -> WCNFPlus:
+    def add_to_formula(self, formula:WCNFPlus) -> WCNFPlus:
         if self.value != None:
             formula.append([self.id * (1 if self.value else -1)])
         return formula
 
+    def result(self) -> str:
+        return self.description + '=' + str(self.__result)
+
+    def __str__(self) -> str:
+        return self.description
+
+    def __repr__(self) -> str:
+        return self.description
+
+
+class Clause:
+    def add_to_formula(self, formula:WCNFPlus) -> WCNFPlus:
+        return formula
+
+
+class HardClause(Clause):
+    def __init__(self, variables:tuple[tuple[Variable, bool]]) -> None:
+        self.variables = variables
+
+    def add_to_formula(self, formula:WCNFPlus) -> WCNFPlus:
+        formula.append(self.variables)
+        return formula
+
+    def __str__(self) -> str:
+        return str(tuple(('' if sign else '-') + str(variable) for (variable, sign) in self.variables))
+
+    def __repr__(self) -> str:
+        return str(tuple(('' if sign else '-') + str(variable) for (variable, sign) in self.variables))
+
 
 class Solver:
-    def __init__(self, variables:tuple[Variable]) -> None:
+    def __init__(self, variables:tuple[Variable], clauses:tuple[Clause]) -> None:
         self.variables = variables
+        self.clauses = clauses
         self.cost = None
 
     def solve(self) -> None:
         formula = WCNFPlus()
         for variable in self.variables:
-            variable.add_as_clause(formula)
+            variable.add_to_formula(formula)
+        for clause in self.clauses:
+            clause.add_to_formula(formula)
 
-        # Temporary solver
         with RC2(formula) as solver:
-            print(solver.compute())
+            result = solver.compute()
             self.cost = solver.cost
-            print('Cost = ' + str(self.cost))
-            # Set the result value for each variable
+            for i in range(len(result)):
+                self.variables[i].__result = result[i]
