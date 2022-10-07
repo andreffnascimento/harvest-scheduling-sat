@@ -1,13 +1,16 @@
 class HarvestSchedulingProblem:
     
     class Area:
-        def __init__(self, id):
+        def __init__(self, id:int) -> None:
             self.id = id
             self.size = -1
             self.adjacencies = ()
             self.profits = ()
 
-    def __init__(self):
+        def __str__(self) -> str:
+            return str(self.id)
+
+    def __init__(self) -> None:
         self.n_units = -1
         self.n_periods = -1
         self.areas = []
@@ -25,7 +28,7 @@ class HarvestSchedulingProblem:
             hsp.areas[area_id].size = int(area_sizes[area_id])
 
         for area in hsp.areas:
-            area.adjacencies = tuple([int(adjacency) for adjacency in str(input()).split(' ')])
+            area.adjacencies = tuple([hsp.areas[int(adjacency) - 1] for adjacency in str(input()).split(' ')])
 
         for _ in range(hsp.n_periods):
             period_profits = str(input()).split(' ')
@@ -35,7 +38,7 @@ class HarvestSchedulingProblem:
         hsp.min_natural_reserve = int(input())
         return hsp
 
-    def __str__(self):
+    def __str__(self) -> str:
         hsp = 'Harvest Scheduling Problem\n==========================\n'
         hsp += 'No units = ' + str(self.n_units) + '\n'
         hsp += 'No periods = ' + str(self.n_periods) + '\n'
@@ -61,13 +64,14 @@ class HarvestSchedulingProblem:
             area_str_top += ('U' + str(area.id)).center(max_area_len) + '|'
             profit_str_top += ('U' + str(area.id)).center(max_profit_len) + '|'
             area_str_bot += str(area.size).center(max_area_len) + '|'
-            adjacencies += 'U' + str(area.id) + (' ' * (max_id_len - len(str(area.id)))) + ' : ' + str(area.adjacencies) + '\n'
+            adjacencies += 'U' + str(area.id) + (' ' * (max_id_len - len(str(area.id)))) + ' : ' + \
+                str(tuple([str(adjacency) for adjacency in area.adjacencies])) + '\n'
 
         hsp += 'Sizes:\n' + area_divider + area_str_top + '\n' + area_str_bot + '\n' + area_divider + '\n'
         hsp += 'Adjacencies:\n' + adjacencies + '\n'
 
         for period in range(self.n_periods):
-            profit_str_others += '\n' + (' ' * (6 - len(str(period)))) + str(period) + ' ||'
+            profit_str_others += '\n' + (' ' * (6 - len(str(period)))) + str(period + 1) + ' ||'
             for area in self.areas:
                 profit_str_others += str(area.profits[period]).center(max_profit_len) + '|'
 
