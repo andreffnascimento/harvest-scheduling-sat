@@ -1,4 +1,5 @@
 from hsp import HarvestSchedulingProblem
+from sat import Solver
 from variables import hsp_variables
 
 if __name__ == '__main__':
@@ -6,5 +7,6 @@ if __name__ == '__main__':
    print(hsp)
 
    variables = hsp_variables(hsp)
-   for variable in variables:
-      print(variable)
+
+   solver = Solver(variables)
+   solver.solve() 
