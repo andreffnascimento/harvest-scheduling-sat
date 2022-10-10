@@ -36,41 +36,13 @@ class Variable:
     def __repr__(self) -> str:
         return self.description
 
-
-class Clause:
-    def add_to_formula(self, formula:WCNFPlus) -> WCNFPlus:
-        return formula
-
-
-class HardClause(Clause):
-    def __init__(self, variables:tuple[tuple[Variable, bool]]) -> None:
-        self.variables = variables
-
-    def add_to_formula(self, formula:WCNFPlus) -> WCNFPlus:
-        formula.append(self.variables)
-        return formula
-
-    def __str__(self) -> str:
-        return str(tuple(('' if sign else '-') + str(variable) for (variable, sign) in self.variables))
-
-    def __repr__(self) -> str:
-        return str(tuple(('' if sign else '-') + str(variable) for (variable, sign) in self.variables))
-
-
 class Solver:
-    def __init__(self, variables:tuple[Variable], clauses:tuple[Clause]) -> None:
+    def __init__(self, variables:tuple[Variable]) -> None:
         self.variables = variables
-        self.clauses = clauses
         self.cost = None
 
-    def solve(self) -> None:
-        formula = WCNFPlus()
-        for variable in self.variables:
-            variable.add_to_formula(formula)
-        for clause in self.clauses:
-            clause.add_to_formula(formula)
-
-        with RC2(formula) as solver:
+    def solve(self, formula:WCNFPlus) -> None:
+        with RC2(formula, solver='gluecard4') as solver:
             result = solver.compute()
             self.cost = solver.cost
             for i in range(len(result)):

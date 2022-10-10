@@ -1,17 +1,16 @@
 from hsp import HarvestSchedulingProblem
 from sat import Solver
 from variables import hsp_variables
-from clauses import hsp_clauses
+from formula import hsp_formula
 
 if __name__ == '__main__':
    hsp = HarvestSchedulingProblem.make_from_input()
-   # print(hsp)
 
    variables = hsp_variables(hsp)
-   clauses = hsp_clauses(hsp)
+   formula = hsp_formula(hsp, variables)
 
-   solver = Solver(variables, clauses)
-   solver.solve() 
+   solver = Solver(variables)
+   solver.solve(formula) 
 
-   for variable in variables:
-      print(variable.result())
+   # for variable in variables:
+   #    print(variable.result())

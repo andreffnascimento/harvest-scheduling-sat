@@ -34,7 +34,7 @@ $\text{Two adjacent units cannot be harvested at the same time:}$
 $\forall_{i,j \in U} Adj_{ij} \implies (\neg Harv_{it} \lor \neg Harv_{jt}), t \in T$
 
 $\text{The total size of the natural reserve must be at least the minimum:}$
-$\sum_{i \in U} A_{i} \times Nat_{i} \ge A_{min}$
+$\sum_{i \in U} A_{i} \cdot Nat_{i} \ge A_{min}$
 
 <br>
 
