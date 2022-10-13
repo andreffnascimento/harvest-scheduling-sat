@@ -22,14 +22,25 @@ class HSPFormula:
         for clause in self.formula.atms:
             literals = [('-' if var < 0 else '') + self.variables[abs(var)].__repr__() for var in clause[0]]
             hsp_atms += ' + '.join(literals) + ' ≤ ' + str(clause[1]) + '\n'
-        return hsp_formula_str + hsp_hard + hsp_atms
+        hsp_soft = '\n[ Clauses: Soft ]:\n'
+        for i in range(len(self.formula.soft)):
+            literals = [('¬' if var < 0 else '') + self.variables[abs(var)].__repr__() for var in self.formula.soft[i]]
+            hsp_soft += ' v '.join(literals) + ' | ' + str(self.formula.wght[i]) + '\n'
+        return hsp_formula_str + hsp_hard + hsp_atms + hsp_soft
 
     def __create_formula(self) -> None:
+        self.__adjacent_areas()
         self.__harvest_at_most_once()
         self.__harvest_adjacent_at_same_time()
         self.__nature_reserve_minimum_size()
         self.__nature_reserve_not_harvested()
         self.__nature_reserve_connected()
+        self.__maximum_profit()
+
+    def __adjacent_areas(self) -> None:
+        for i in range(len(self.hsp.areas)):
+            for j in range(len(self.hsp.areas)):
+                self.formula.append([(1 if self.hsp.areas[j] in self.hsp.areas[i].adjacencies else -1) * self.variables.adj[i][j].id])
 
     def __harvest_at_most_once(self) -> None:
         for i in range(self.hsp.n_areas):
@@ -45,8 +56,14 @@ class HSPFormula:
     def __nature_reserve_minimum_size(self) -> None:
         variables = [self.variables.nat[i].id for i in range(self.hsp.n_areas)]
         weights = [area.size for area in self.hsp.areas]
-        for clause in PBEnc.atleast(variables, weights, self.hsp.min_natural_reserve).clauses:
+        clauses = PBEnc.atleast(variables, weights, self.hsp.min_natural_reserve, top_id=len(self.variables)).clauses
+        new_variables = ()
+        for clause in clauses:
             self.formula.append(clause)
+            for variable_id in clause:
+                if variable_id > len(self.variables) and variable_id not in new_variables:
+                    new_variables += (variable_id,)
+        self.variables.add_new_aux_variables(sorted(new_variables))
 
     def __nature_reserve_not_harvested(self) -> None:
         for i in range(self.hsp.n_areas):
@@ -56,13 +73,7 @@ class HSPFormula:
     def __nature_reserve_connected(self) -> None:
         pass    # TODO
 
-# def connected_nature_reserve(hsp:HarvestSchedulingProblem, variables:dict, formula:WCNFPlus) -> None:
-#     adj_variables  = variables['Adj']
-#     nat_variables = variables['Nat']
-#     conn_variables = variables['Conn']
-#     for i in range(hsp.n_areas):
-#         for j in range(hsp.n_areas):
-#             formula.append([nat_variables[i].id, -conn_variables[i][j].id])
-#             formula.append([nat_variables[j].id, -conn_variables[i][j].id])
-#             formula.append([-nat_variables[i].id, -nat_variables[j].id, -adj_variables[i][j].id, conn_variables[i][j].id])
-#             formula.append([-nat_variables[i].id, -nat_variables[j].id, conn_variables[i][j].id])
+    def __maximum_profit(self) -> None:
+        for i in range(self.hsp.n_areas):
+            for t in range(self.hsp.n_periods):
+                self.formula.append([self.variables.harv[i][t].id], weight=self.hsp.areas[i].profits[t])

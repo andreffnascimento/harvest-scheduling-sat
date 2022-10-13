@@ -7,7 +7,8 @@ $T \rightarrow \text{Periods}$
 <br>
 
 ## Input Variables:
-$A_{i} \rightarrow \text{size of the unit }i \in U$
+$A_{i} \rightarrow \text{size of the unit }i \in U$                                             \
+$Prof_{it} \rightarrow \text{profit of unit }i \in U \text{ in the period }t \in T$
 
 <br>
 
@@ -23,7 +24,7 @@ $Conn_{ij} \rightarrow \text{true if the both units }i \in U\text{ and } j \in U
 
 
 
-# Hard Constrains:
+# Hard Clauses:
 
 ## Generic
 
@@ -47,3 +48,13 @@ $$\forall_{i,j \in U} (\neg N_{i} \lor \neg N_{j}) \implies \neg Conn_{ij}$$
 $$\forall_{i,j \in U} (N_{i} \land N_{j} \land Adj_{ij}) \implies Conn_{ij}$$
 $$\forall_{i,j,k \in U} (Conn_{ik} \land Conn_{kj}) \implies Conn_{ij}$$
 $$\forall_{i,j \in U} (N_{i} \land N_{j}) \implies Conn_{ij}$$
+
+<br>
+<br>
+
+
+
+# Soft Clauses:
+
+$\text{Maximize the harvest profit:}$
+$max \sum_{i \in U, t \in T} Prof_{it} \cdot Harv_{it}$

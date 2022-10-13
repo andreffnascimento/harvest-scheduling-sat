@@ -1,4 +1,4 @@
-from sat.variables import Variable, VariableGenerator
+from sat.variables import Variable
 
 from hsp.hsp import HarvestSchedulingProblem
 
@@ -10,6 +10,7 @@ class HSPVariables:
         self.harv = ()
         self.nat  = ()
         self.conn = ()
+        self.aux = ()
         self.__variables = ()
         self.__create_variables()
     
@@ -24,6 +25,20 @@ class HSPVariables:
 
     def __getitem__(self, id:int) -> Variable:
         return self.__variables[id - 1]
+
+    def __len__(self):
+        return len(self.__variables)
+
+    def add_new_aux_variables(self, variable_ids:tuple[int]):
+        for variable_id in variable_ids:
+           if variable_id > len(self.__variables):
+                self.aux += (self.__create_variable('Aux[' + str(len(self.aux) + 1) + ']'),)
+
+    def set_result(self, result:tuple[int]|None) -> None:
+        if result == None:
+            return
+        for i in range(len(result)):
+            self.__variables[i].value = (result[i] > 0)
 
     def __create_variable(self, description) -> Variable:
         variable = Variable(description)

@@ -1,25 +1,23 @@
 from hsp.hsp import HarvestSchedulingProblem
 from hsp.hsp_formula import HSPFormula
+from hsp.hsp_output import HSPOutput
 from hsp.hsp_variables import HSPVariables
+from sat.solver import Solver
 
 if __name__ == '__main__':
    hsp = HarvestSchedulingProblem.make_from_input()
    print(hsp)
    
    variables = HSPVariables(hsp)
-   print(variables)
-
    formula = HSPFormula(hsp, variables)
    print(formula)
 
+   solver = Solver(formula.formula)
+   print('Solving...')
 
-# class Solver:
-#     def __init__(self, variables:tuple[Variable]) -> None:
-#         self.variables = variables
-#         self.result = ()
-#         self.cost = None
+   variables.set_result(solver.solve())
+   print(variables)
+   print('Cost = ' + str(solver.cost) + '\n\nOutput:')
 
-#     def solve(self, formula:WCNFPlus) -> None:
-#         with RC2(formula, solver='gluecard4') as solver:
-#             self.result = solver.compute()
-#             self.cost = solver.cost
+   hsp_output = HSPOutput(hsp, variables, solver.cost)
+   print(hsp_output)
