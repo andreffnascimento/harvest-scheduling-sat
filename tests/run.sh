@@ -27,6 +27,8 @@ CHECKDIR='check/'
 
 CHECKER='hsp-checker'
 
+RUN='python3'
+
 shift
 failures=0
 
@@ -39,8 +41,8 @@ do
 	testcheck=${CHECKDIR}${testname}${CHECK}
 	
 	echo "Testing ${test}..."
-	echo "${SOLUTION} < ${test} > ${testhyp}"
-	echo "diff -q ${testout} ${testhyp} > ${testdiff}"
+	${RUN} ${SOLUTION} < ${test} > ${testhyp}
+	diff -q ${testout} ${testhyp} > ${testdiff}
 	rv_diff=$?
 
 	if [ ${rv_diff} == 0 ] ; then
@@ -48,7 +50,7 @@ do
 	else
 		echo "Test ${testname} FAILED. :("
 		echo "Checking with ${CHECKER} what is wrong..."
-		echo "./${CHECKER} ${test} ${testhyp} > ${testcheck}"
+		./${CHECKER} ${test} ${testhyp} > ${testcheck}
 
 		let failures="1+${failures}"
 	fi
