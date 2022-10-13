@@ -10,36 +10,15 @@ class HarvestSchedulingProblem:
         def __str__(self) -> str:
             return str(self.id)
 
+
     def __init__(self) -> None:
         self.n_areas = -1
         self.n_periods = -1
         self.areas = []
         self.min_natural_reserve = -1
 
-    @staticmethod
-    def make_from_input():
-        hsp = HarvestSchedulingProblem()
-        hsp.n_areas = int(input())
-        hsp.n_periods = int(input())
-        hsp.areas = [HarvestSchedulingProblem.Area(i + 1) for i in range(hsp.n_areas)]
-
-        area_sizes = str(input()).split(' ')
-        for area_id in range(len(area_sizes)):
-            hsp.areas[area_id].size = int(area_sizes[area_id])
-
-        for area in hsp.areas:
-            area.adjacencies = tuple([hsp.areas[int(adjacency) - 1] for adjacency in str(input()).split(' ')])
-
-        for _ in range(hsp.n_periods):
-            period_profits = str(input()).split(' ')
-            for area_id in range(len(period_profits)):
-                hsp.areas[area_id].profits += (int(period_profits[area_id]),)
-
-        hsp.min_natural_reserve = int(input())
-        return hsp
-
     def __str__(self) -> str:
-        hsp = 'Harvest Scheduling Problem\n==========================\n'
+        hsp =  ('=' * 80) + '\n\tHarvest Scheduling Problem\n' + ('=' * 80) + '\n'
         hsp += 'No units = ' + str(self.n_areas) + '\n'
         hsp += 'No periods = ' + str(self.n_periods) + '\n'
         hsp += 'Min natural reserve size = ' + str(self.min_natural_reserve) + '\n\n'
@@ -65,7 +44,7 @@ class HarvestSchedulingProblem:
             profit_str_top += ('U' + str(area.id)).center(max_profit_len) + '|'
             area_str_bot += str(area.size).center(max_area_len) + '|'
             adjacencies += 'U' + str(area.id) + (' ' * (max_id_len - len(str(area.id)))) + ' : ' + \
-                str(tuple([str(adjacency) for adjacency in area.adjacencies])) + '\n'
+                str(tuple(['U' + (str(adjacency)) for adjacency in area.adjacencies])) + '\n'
 
         hsp += 'Sizes:\n' + area_divider + area_str_top + '\n' + area_str_bot + '\n' + area_divider + '\n'
         hsp += 'Adjacencies:\n' + adjacencies + '\n'
@@ -76,4 +55,26 @@ class HarvestSchedulingProblem:
                 profit_str_others += str(area.profits[period]).center(max_profit_len) + '|'
 
         hsp += 'Profits:\n' + profits_divider + profit_str_top + profit_str_others + '\n' + profits_divider
+        return hsp
+
+    @staticmethod
+    def make_from_input():
+        hsp = HarvestSchedulingProblem()
+        hsp.n_areas = int(input())
+        hsp.n_periods = int(input())
+        hsp.areas = [HarvestSchedulingProblem.Area(i + 1) for i in range(hsp.n_areas)]
+
+        area_sizes = str(input()).split(' ')
+        for area_id in range(len(area_sizes)):
+            hsp.areas[area_id].size = int(area_sizes[area_id])
+
+        for area in hsp.areas:
+            area.adjacencies = tuple([hsp.areas[int(adjacency) - 1] for adjacency in str(input()).split(' ')[1::]])
+
+        for _ in range(hsp.n_periods):
+            period_profits = str(input()).split(' ')
+            for area_id in range(len(period_profits)):
+                hsp.areas[area_id].profits += (int(period_profits[area_id]),)
+
+        hsp.min_natural_reserve = int(input())
         return hsp
