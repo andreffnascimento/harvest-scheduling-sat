@@ -29,13 +29,18 @@ class HSPFormula:
         return hsp_formula_str + hsp_hard + hsp_atms + hsp_soft
 
     def __create_formula(self) -> None:
+        self.__maximum_profit()
         self.__adjacent_areas()
         self.__harvest_at_most_once()
         self.__harvest_adjacent_at_same_time()
         self.__nature_reserve_minimum_size()
         self.__nature_reserve_not_harvested()
         self.__nature_reserve_connected()
-        self.__maximum_profit()
+
+    def __maximum_profit(self) -> None:
+        for i in range(self.hsp.n_areas):
+            for t in range(self.hsp.n_periods):
+                self.formula.append([self.variables.harv[i][t].id], weight=self.hsp.areas[i].profits[t])
 
     def __adjacent_areas(self) -> None:
         for i in range(len(self.hsp.areas)):
@@ -71,9 +76,54 @@ class HSPFormula:
                 self.formula.append([-self.variables.nat[i].id, -self.variables.harv[i][t].id])
 
     def __nature_reserve_connected(self) -> None:
-        pass    # TODO
+        self.__conn_unit_unique_predecessor()
+        self.__conn_root_unique_predecessor()
+        self.__conn_unit_unique_depth()
+        self.__conn_root_depth_and_predecessor()
+        self.__conn_non_nature_reserve_depth()
+        self.__conn_nature_reserve_depth_not_one()
+        self.__conn_nature_reserve_has_predecessor()
+        self.__conn_predecessor_is_adjacent()
+        self.__conn_nature_reserve_depth_propagation()
 
-    def __maximum_profit(self) -> None:
+    def __conn_unit_unique_predecessor(self) -> None:
+        for i in range(self.hsp.n_areas + 1):
+            variables = [self.variables.conn_pred[i][j].id for j in range(self.hsp.n_areas + 1)]
+            self.formula.append([variables, 1], is_atmost=True)
+
+    def __conn_root_unique_predecessor(self) -> None:
+        variables = [self.variables.conn_pred[i][0].id for i in range(self.hsp.n_areas + 1)]
+        self.formula.append([variables, 1], is_atmost=True)
+
+    def __conn_unit_unique_depth(self) -> None:
+        for i in range(self.hsp.n_areas + 1):
+            variables = [self.variables.conn_depth[i][d].id for d in range(self.hsp.n_areas + 2)]
+            self.formula.append([variables, 1], is_atmost=True)
+
+    def __conn_root_depth_and_predecessor(self) -> None:
+        self.formula.append([self.variables.conn_pred[0][0].id])
+        self.formula.append([self.variables.conn_depth[0][1].id])
+
+    def __conn_non_nature_reserve_depth(self) -> None:
         for i in range(self.hsp.n_areas):
-            for t in range(self.hsp.n_periods):
-                self.formula.append([self.variables.harv[i][t].id], weight=self.hsp.areas[i].profits[t])
+            self.formula.append([self.variables.nat[i].id, self.variables.conn_depth[i + 1][0].id])
+
+    def __conn_nature_reserve_depth_not_one(self) -> None:
+        for i in range(self.hsp.n_areas):
+            self.formula.append([-self.variables.nat[i].id, -self.variables.conn_depth[i + 1][1].id])
+
+    def __conn_nature_reserve_has_predecessor(self) -> None:
+        for i in range(1, self.hsp.n_areas + 1):
+            variables = [self.variables.conn_pred[i][j].id for j in range(self.hsp.n_areas + 1)]
+            self.formula.append([-self.variables.nat[i - 1].id,] + variables)
+
+    def __conn_predecessor_is_adjacent(self) -> None:
+        for i in range(1, self.hsp.n_areas + 1):
+            for j in range(1, self.hsp.n_areas + 1):
+                self.formula.append([-self.variables.conn_pred[i][j].id, self.variables.adj[i - i][j - i].id])
+
+    def __conn_nature_reserve_depth_propagation(self) -> None:
+        for i in range(1, self.hsp.n_areas + 1):
+            for j in range(self.hsp.n_areas + 1):
+                for d in range(self.hsp.n_areas + 1):
+                    self.formula.append([-self.variables.conn_pred[i][j].id, -self.variables.conn_depth[j][d].id, self.variables.conn_depth[i][d + 1].id])

@@ -66,14 +66,17 @@ $Pred_{ij} \rightarrow \text{true if unit }i \in U' \text{ is the predecessor of
 $Depth_{id} \rightarrow \text{true if unit }i \in U' \text{ has a depth of }d \in U' \cup \{\#U + 1\}$
 
 ## Constraints
-$\text{Each unit has a unique depth:}$
-$\forall_{i \in U} \sum_{d \in D} Depth_{id} \le 1$
-
 $\text{Each unit has a single predecessor:}$
 $\forall_{i \in U} \sum_{j \in U} Pred_{ij} \le 1$
 
 $\text{The root can only be the predecessor of a single unit:}$
-$\sum_{j \in U} Pred_{0j} \le 1$
+$\sum_{j \in U} Pred_{j0} \le 1$
+
+$\text{The Predecessor of the root is the root:}$
+$Pred_{00}$
+
+$\text{Each unit has a unique depth:}$
+$\forall_{i \in U} \sum_{d \in D} Depth_{id} \le 1$
 
 $\text{The depth of the root is one:}$
 $Depth_{01}$
@@ -85,7 +88,7 @@ $\text{Nature reserves cannot have the depth one:}$
 $\forall_{i \in U} Nat_{i} \implies \neg Depth_{i1}$
 
 $\text{Nature reserves must always have a predecessor (unit or root):}$
-$\forall_{i \in U} Nat_{i} \implies \bigvee_{j \in U'} Pred_{ji}$
+$\forall_{i \in U} Nat_{i} \implies \bigvee_{j \in U'} Pred_{ij}$
 
 $\text{If a unit is a precessor of another, than they must be adjacent:}$
 $\forall_{i,j \in U} Pred_{ij} => Adj_{ij}$

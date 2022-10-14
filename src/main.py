@@ -4,20 +4,27 @@ from hsp.hsp_output import HSPOutput
 from hsp.hsp_variables import HSPVariables
 from sat.solver import Solver
 
+__debug = False
+
+def __debug_log(argument):
+   if __debug:
+      print(argument)
+
+
+
 if __name__ == '__main__':
    hsp = HarvestSchedulingProblem.make_from_input()
-   print(hsp)
+   __debug_log(hsp)
    
    variables = HSPVariables(hsp)
    formula = HSPFormula(hsp, variables)
-   print(formula)
+   __debug_log(formula)
 
    solver = Solver(formula.formula)
-   print('Solving...')
+   __debug_log('Solving...')
 
    variables.set_result(solver.solve())
-   print(variables)
-   print('Cost = ' + str(solver.cost) + '\n\nOutput:')
+   __debug_log(variables)
 
    hsp_output = HSPOutput(hsp, variables, solver.cost)
    print(hsp_output)
