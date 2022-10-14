@@ -9,7 +9,6 @@ class HSPVariables:
         self.adj  = ()
         self.harv = ()
         self.nat  = ()
-        self.conn = ()
         self.aux = ()
         self.__variables = ()
         self.__create_variables()
@@ -49,13 +48,10 @@ class HSPVariables:
         for area1 in self.hsp.areas:
             adj_variables = ()
             harv_variables = ()
-            conn_variables = ()
             for area2 in self.hsp.areas:
                 adj_variables  += (self.__create_variable('Adj[' + str(area1) + ',' + str(area2) + ']'),)
-                conn_variables += (self.__create_variable('Conn[' + str(area1) + ',' + str(area2) + ']'),)
             for t in range(self.hsp.n_periods):
                 harv_variables += (self.__create_variable('Harv[' + str(area1) + ',' + str(t + 1) + ']'),)
             self.adj  += (adj_variables,)
-            self.conn += (conn_variables,)
             self.harv += (harv_variables,)
             self.nat  += (self.__create_variable('Nat[' + str(area1) + ']'),)
