@@ -17,10 +17,8 @@ NC='\033[0m'
 SOLUTION=${1}
 HYP='.hyp'
 OUT='.out'
-DIFF='.diff'
 CHECK='.check'
 
-DIFFDIR='diff/'
 HYPDIR='hyp/'
 OUTDIR='out/'
 CHECKDIR='check/'
@@ -30,31 +28,21 @@ CHECKER='hsp-checker'
 RUN='python3'
 
 shift
-failures=0
+rm overall.txt
 
 for test in "$@"
 do
 	testname=$(basename -as .hsp "${test}")
 	testhyp=${HYPDIR}${testname}${HYP}
 	testout=${OUTDIR}${testname}${OUT}
-	testdiff=${DIFFDIR}${testname}${DIFF}
 	testcheck=${CHECKDIR}${testname}${CHECK}
 	
 	echo "Testing ${test}..."
+	ts=$(date +%s%N)
 	${RUN} ${SOLUTION} < ${test} > ${testhyp}
-	diff -q ${testout} ${testhyp} > ${testdiff}
-	rv_diff=$?
+	tt=$((($(date +%s%N) - $ts)/1000000)) 
+	echo -e "${testname}\t|\t${tt} ms" >> overall.txt
 
-	if [ ${rv_diff} == 0 ] ; then
-		echo "Test ${testname} PASSSED. :)"
-	else
-		echo "Test ${testname} FAILED. :("
-		echo "Checking with ${CHECKER} what is wrong..."
-		./${CHECKER} ${test} ${testhyp} > ${testcheck}
-
-		let failures="1+${failures}"
-	fi
+	./${CHECKER} ${test} ${testhyp} > ${testcheck}
+	
 done
-
-echo -e "Failures: ${failures}"
-

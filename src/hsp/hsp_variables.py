@@ -30,6 +30,13 @@ class HSPVariables:
     def __len__(self):
         return len(self.__variables)
 
+    def true_vars(self) -> str:
+        hsp_variables_str = ('=' * 80) + '\n\tTrue Variables\n' + ('=' * 80) + '\n'
+        for variable in self.__variables:
+            if variable.value:
+                hsp_variables_str += str(variable) + '\n'
+        return hsp_variables_str
+
     def add_new_aux_variables(self, variable_ids:tuple[int]):
         for variable_id in variable_ids:
            if variable_id > len(self.__variables):
@@ -81,6 +88,6 @@ class HSPVariables:
     def __create_conn_depth_variables(self) -> None:
         for i in range(0, self.hsp.n_areas + 1):
             conn_depth_variables = ()
-            for j in range(0, self.hsp.n_areas + 2):
+            for j in range(0, self.hsp.n_areas + 3):
                 conn_depth_variables += (self.__create_variable('Conn_Depth[' + str(i) + ',' + str(j) + ']'),)
             self.conn_depth += (conn_depth_variables,)

@@ -11,7 +11,7 @@ class Solver:
         self.cost = None
 
     def solve(self) -> tuple[int]|None:
-        with RC2(self.formula, solver='gluecard4') as solver:
+        with RC2(self.formula, solver='gluecard4', adapt=True, exhaust=True, incr=True, minz=True) as solver:
             result = solver.compute()
             self.cost = solver.cost
             return result

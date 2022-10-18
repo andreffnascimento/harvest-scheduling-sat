@@ -55,7 +55,7 @@ $max \sum_{i \in U, t \in T} Prof_{it} \cdot Harv_{it}$
 # Connected Natural Reserve Clauses:
 
 **Units with root** $\rightarrow U' = U \cup \{0\}$     \
-**Possible depths** $\rightarrow D = \{0, ..., (\#U + 1)\}$
+**Possible depths** $\rightarrow D = \{0, ..., (\#U + 2)\}$
 
 <br>
 
@@ -71,9 +71,6 @@ $\forall_{i \in U} \sum_{j \in U} Pred_{ij} \le 1$
 
 $\text{The root can only be the predecessor of a single unit:}$
 $\sum_{j \in U} Pred_{j0} \le 1$
-
-$\text{The Predecessor of the root is the root:}$
-$Pred_{00}$
 
 $\text{Each unit has a unique depth:}$
 $\forall_{i \in U} \sum_{d \in D} Depth_{id} \le 1$

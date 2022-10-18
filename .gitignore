@@ -4,3 +4,8 @@
 # VS Code settings
 *.code-workspace
 .vscode/
+
+# Test files
+tests/check/*
+tests/hyp/*
+tests/overall.txt

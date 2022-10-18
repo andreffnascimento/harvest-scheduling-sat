@@ -25,6 +25,7 @@ if __name__ == '__main__':
 
    variables.set_result(solver.solve())
    __debug_log(variables)
+   __debug_log(variables.true_vars())
 
    hsp_output = HSPOutput(hsp, variables, solver.cost)
    print(hsp_output)

@@ -27,8 +27,8 @@ class HarvestSchedulingProblem:
         profits = tuple(sum(profits, ()))
 
         max_id_len = len(str(max(self.areas, key = lambda area: area.id, default = 0).id))
-        max_area_len = len(str(max(self.areas, key = lambda area: area.size, default = 0).size)) + 3
-        max_profit_len = len(str(max(profits, default = 0))) + 3
+        max_area_len = max(len(str(self.n_areas)) + 1, len(str(max(self.areas, key = lambda area: area.size, default = 0).size))) + 2
+        max_profit_len = max(len(str(self.n_areas)) + 1, len(str(max(profits, default = 0)))) + 2
 
         area_str_top = '   ||'
         area_str_bot = 'Ai ||'
