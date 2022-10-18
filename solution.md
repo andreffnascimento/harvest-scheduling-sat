@@ -1,8 +1,10 @@
 # Variables
 
 ## Sets of Variables
-$U \rightarrow \text{Units}$        \
-$T \rightarrow \text{Periods}$
+$U \rightarrow \text{Units}$                                                                    \
+$T \rightarrow \text{Periods}$                                                                  \
+$D \rightarrow \text{Possible depth in the nature reserve tree} = \large{[0, \frac{n}{2}]}$ \
+$Adj(i) \rightarrow \text{Variables adjacent to unit i}$
 
 <br>
 
@@ -16,79 +18,54 @@ $Prof_{it} \rightarrow \text{profit of unit }i \in U \text{ in the period }t \in
 
 $Adj_{ij} \rightarrow \text{true if unit }i \in U\text{ is adjacent to unit } j \in U$          \
 $Harv_{it} \rightarrow \text{true if unit }i \in U\text{ was harvested in period } t \in T$     \
-$Nat_{i} \rightarrow \text{true if }i \in U\text{ is a nature reserve}$
+$Nat_{i} \rightarrow \text{true if }i \in U\text{ is a nature reserve}$                         \
+$Depth_{id} \rightarrow \text{true if the depth of the nature reserve }i \in U\text{ is }d \in D$
+
+**Maximum Depth in the Nature Reserve Tree** $\rightarrow \large{\frac{n + 1}{2}}$
+
 
 <br>
 <br>
 
 
 
-# Hard Clauses:
+# Problem Clauses:
 
-$\text{Each unit can only be harvest at most once in T periods:}$
-$\forall_{i \in U} \sum_{t \in T} Harv_{it} \le 1$
+## Hard Clauses:
 
-$\text{Two adjacent units cannot be harvested at the same time:}$
-$\forall_{i,j \in U} Adj_{ij} \implies (\neg Harv_{it} \lor \neg Harv_{jt}), t \in T$
+$\text{Each unit can only be harvest at most once in T periods}$                                \
+$\forall i \in U , \sum \limits_{t \in T} Harv_{i,t} \le 1$
 
-$\text{Natural reserves cannot be harvested:}$
-$\forall_{i \in U} Nat_{i} \implies \forall_{t \in T} \neg Harv_{it}$
+$\text{Two adjacent units cannot be harvested at the same time}$                                \
+$\forall i,j \in U , Adj_{i,j} \implies (\neg Harv_{i,t} \lor \neg Harv_{j,t}), t \in T$
 
-$\text{The total size of the natural reserve must be at least the minimum:}$
-$\sum_{i \in U} A_{i} \cdot Nat_{i} \ge A_{min}$
+$\text{Natural reserves cannot be harvested}$                                                   \
+$\forall i \in U , Nat_{i} \implies (\bigwedge\limits_{t \in T} \neg Harv_{i,t})$
 
-<br>
-<br>
-
-
-
-# Soft Clauses:
-
-$\text{Maximize the harvest profit:}$
-$max \sum_{i \in U, t \in T} Prof_{it} \cdot Harv_{it}$
+$\text{The total size of the natural reserve must be at least the minimum}$                     \
+$\sum \limits_{i \in U} A_{i} \cdot Nat_{i} \ge A_{min}$
 
 <br>
 <br>
 
+## Soft Clauses (Optimization):
 
-
-# Connected Natural Reserve Clauses:
-
-**Units with root** $\rightarrow U' = U \cup \{0\}$     \
-**Possible depths** $\rightarrow D = \{0, ..., (\#U + 2)\}$
+$\text{Maximize the harvest profit}$                                                            \
+$\forall i \in U , \forall t \in T , Prof_{it} \cdot Harv_{it}$
 
 <br>
+<br>
 
-## New Variables
+## Connected Natural Reserve Clauses:
 
-$Pred_{ij} \rightarrow \text{true if unit }i \in U' \text{ is the predecessor of unit }j \in U'$
+$\text{All units that are not nature reserves do not have any depth}$                           \
+$\forall i \in U , \neg Nat_{i} \implies (\bigwedge \limits_{d \in D} \neg Depth_{i,d})$
 
-$Depth_{id} \rightarrow \text{true if unit }i \in U' \text{ has a depth of }d \in U' \cup \{\#U + 1\}$
+$\text{All nature reserve units must have a single depth}$                                      \
+$\forall i \in U , Nat_{i} \implies (\sum \limits_{d \in D} Depth_{i,d} = 1)$
 
-## Constraints
-$\text{Each unit has a single predecessor:}$
-$\forall_{i \in U} \sum_{j \in U} Pred_{ij} \le 1$
+$\text{At most one node has the depth 0}$                                                       \
+$\sum \limits_{i \in U} Depth_{i,0} \le 1$
 
-$\text{The root can only be the predecessor of a single unit:}$
-$\sum_{j \in U} Pred_{j0} \le 1$
-
-$\text{Each unit has a unique depth:}$
-$\forall_{i \in U} \sum_{d \in D} Depth_{id} \le 1$
-
-$\text{The depth of the root is one:}$
-$Depth_{01}$
-
-$\text{Units that aren't nature reserves always have a depth of 0:}$
-$\forall_{i \in U} \neg Nat_{i} \implies Depth_{i0}$
-
-$\text{Nature reserves cannot have the depth one:}$
-$\forall_{i \in U} Nat_{i} \implies \neg Depth_{i1}$
-
-$\text{Nature reserves must always have a predecessor (unit or root):}$
-$\forall_{i \in U} Nat_{i} \implies \bigvee_{j \in U'} Pred_{ij}$
-
-$\text{If a unit is a precessor of another, than they must be adjacent:}$
-$\forall_{i,j \in U} Pred_{ij} => Adj_{ij}$
-
-$\text{If the depth of a predecessor is d, than the depth of the preceded is d+1:}$
-$\forall_{i,j \in U'} Pred_{ij} \land Depth_{jd} \implies Depth_{i(d+1)}$
+$\text{Every nature reserve of depth i must be adjacent to a nature reserve of depth i-1:}$     \
+$\forall i \in U , \forall d \in D\setminus\{0\} , Depth_{i,d} \implies (\bigvee \limits_{j \in Adj(i)} Depth_{j,d-1})$

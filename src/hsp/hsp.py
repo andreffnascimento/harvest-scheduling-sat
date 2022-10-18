@@ -15,13 +15,15 @@ class HarvestSchedulingProblem:
         self.n_areas = -1
         self.n_periods = -1
         self.areas = []
-        self.min_natural_reserve = -1
+        self.min_nature_reserve_area = -1
+        self.max_nature_reserve_depth = -1
 
     def __str__(self) -> str:
         hsp =  ('=' * 80) + '\n\tHarvest Scheduling Problem\n' + ('=' * 80) + '\n'
         hsp += 'No units = ' + str(self.n_areas) + '\n'
         hsp += 'No periods = ' + str(self.n_periods) + '\n'
-        hsp += 'Min natural reserve size = ' + str(self.min_natural_reserve) + '\n\n'
+        hsp += 'Min nature reserve size = ' + str(self.min_nature_reserve_area) + '\n\n'
+        hsp += 'Max nature reserve depth = ' + str(self.max_nature_reserve_depth) + '\n\n'
 
         profits = tuple([area.profits for area in self.areas])
         profits = tuple(sum(profits, ()))
@@ -76,5 +78,6 @@ class HarvestSchedulingProblem:
             for area_id in range(len(period_profits)):
                 hsp.areas[area_id].profits += (int(period_profits[area_id]),)
 
-        hsp.min_natural_reserve = int(input())
+        hsp.min_nature_reserve_area = int(input())
+        hsp.max_nature_reserve_depth = hsp.n_areas // 2
         return hsp

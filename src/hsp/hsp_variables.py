@@ -9,9 +9,8 @@ class HSPVariables:
         self.adj  = ()
         self.harv = ()
         self.nat  = ()
+        self.nat_depth = ()
         self.aux = ()
-        self.conn_pred = ()
-        self.conn_depth = ()
         self.__variables = ()
         self.__create_variables()
     
@@ -57,8 +56,7 @@ class HSPVariables:
         self.__create_adj_variables()
         self.__create_harv_variables()
         self.__create_nat_variables()
-        self.__create_conn_pred_variables()
-        self.__create_conn_depth_variables()
+        self.__create_nat_depth_variables()
 
     def __create_adj_variables(self) -> None:
         for area1 in self.hsp.areas:
@@ -78,16 +76,9 @@ class HSPVariables:
         for area in self.hsp.areas:
             self.nat += (self.__create_variable('Nat[' + str(area) + ']'),)
 
-    def __create_conn_pred_variables(self) -> None:
-        for i in range(0, self.hsp.n_areas + 1):
-            conn_pred_variables  = ()
-            for j in range(0, self.hsp.n_areas + 1):
-                conn_pred_variables  += (self.__create_variable('Conn_Pred['  + str(i) + ',' + str(j) + ']'),)
-            self.conn_pred  += (conn_pred_variables,)
-
-    def __create_conn_depth_variables(self) -> None:
-        for i in range(0, self.hsp.n_areas + 1):
-            conn_depth_variables = ()
-            for j in range(0, self.hsp.n_areas + 3):
-                conn_depth_variables += (self.__create_variable('Conn_Depth[' + str(i) + ',' + str(j) + ']'),)
-            self.conn_depth += (conn_depth_variables,)
+    def __create_nat_depth_variables(self) -> None:
+        for area in self.hsp.areas:
+            nat_depth_variables = ()
+            for d in range(self.hsp.max_nature_reserve_depth + 1):
+                nat_depth_variables += (self.__create_variable('Nat_Depth[' + str(area) + ',' + str(d) + ']'),)
+            self.nat_depth += (nat_depth_variables,)
