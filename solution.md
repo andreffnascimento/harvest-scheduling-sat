@@ -37,7 +37,7 @@ $\text{Each unit can only be harvest at most once in T periods}$                
 $\forall i \in U , \sum \limits_{t \in T} Harv_{i,t} \le 1$
 
 $\text{Two adjacent units cannot be harvested at the same time}$                                \
-$\forall i,j \in U , Adj_{i,j} \implies (\neg Harv_{i,t} \lor \neg Harv_{j,t}), t \in T$
+$\forall i \in U , \forall j \in Adj(i) , \neg Harv_{i,t} \lor \neg Harv_{j,t}, t \in T$
 
 $\text{Natural reserves cannot be harvested}$                                                   \
 $\forall i \in U , Nat_{i} \implies (\bigwedge\limits_{t \in T} \neg Harv_{i,t})$

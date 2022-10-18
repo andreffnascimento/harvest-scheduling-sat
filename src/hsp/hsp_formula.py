@@ -62,9 +62,9 @@ class HSPFormula:
 
     def __harvest_adjacent_at_same_time(self) -> None:
         for i in range(self.hsp.n_areas):
-            for j in range(self.hsp.n_areas):
+            for j in map(lambda area: area.id - 1, self.hsp.areas[i].adjacencies):
                 for t in range(self.hsp.n_periods):
-                    self.formula.append([-self.variables.adj[i][j].id, -self.variables.harv[i][t].id, -self.variables.harv[j][t].id])
+                    self.formula.append([-self.variables.harv[i][t].id, -self.variables.harv[j][t].id])
 
     def __nature_reserve_minimum_size(self) -> None:
         variables = [self.variables.nat[i].id for i in range(self.hsp.n_areas)]
@@ -106,5 +106,5 @@ class HSPFormula:
     def __adjacent_depth_propagation(self):
         for i in range(self.hsp.n_areas):
             for d in range(1, self.hsp.max_nature_reserve_depth + 1):
-                variables = [self.variables.nat_depth[adj.id - 1][d - 1].id for adj in self.hsp.areas[i].adjacencies]
+                variables = [self.variables.nat_depth[j][d - 1].id for j in map(lambda area: area.id - 1, self.hsp.areas[i].adjacencies)]
                 self.formula.append([-self.variables.nat_depth[i][d].id] + variables)
