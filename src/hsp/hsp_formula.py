@@ -25,6 +25,14 @@ class HSPFormula:
             hsp_soft += ' v '.join(literals) + ' | ' + str(self.formula.wght[i]) + '\n'
         return hsp_formula_str + hsp_hard + hsp_soft
 
+    def __add_aux_variables(self, clauses) -> None:
+        new_variables = ()
+        for clause in clauses:
+            for variable_id in clause:
+                if variable_id > len(self.variables) and variable_id not in new_variables:
+                    new_variables += (variable_id,)
+        self.variables.add_new_aux_variables(sorted(new_variables))
+
     def __create_formula(self) -> None:
         self.__maximum_profit()
         self.__adjacent_areas()
@@ -47,8 +55,9 @@ class HSPFormula:
     def __harvest_at_most_once(self) -> None:
         for i in range(self.hsp.n_areas):
             variables = [self.variables.harv[i][t].id for t in range(self.hsp.n_periods)]
-            cnf = CardEnc.atmost(variables, bound=1, encoding=EncType.pairwise)
-            for clause in cnf.clauses:
+            clauses = CardEnc.atmost(variables, encoding=EncType.totalizer, bound=1, top_id=len(self.variables)).clauses
+            self.__add_aux_variables(clauses)
+            for clause in clauses:
                 self.formula.append(clause)
 
     def __harvest_adjacent_at_same_time(self) -> None:
@@ -61,14 +70,10 @@ class HSPFormula:
         variables = [self.variables.nat[i].id for i in range(self.hsp.n_areas)]
         weights = [area.size for area in self.hsp.areas]
         clauses = PBEnc.atleast(variables, weights, self.hsp.min_nature_reserve_area, top_id=len(self.variables)).clauses
-        new_variables = ()
-        for clause in clauses:
+        self.__add_aux_variables(clauses)
+        for clause in clauses:    
             self.formula.append(clause)
-            for variable_id in clause:
-                if variable_id > len(self.variables) and variable_id not in new_variables:
-                    new_variables += (variable_id,)
-        self.variables.add_new_aux_variables(sorted(new_variables))
-
+    
     def __nature_reserve_not_harvested(self) -> None:
         for i in range(self.hsp.n_areas):
             for t in range(self.hsp.n_periods):
@@ -88,14 +93,14 @@ class HSPFormula:
     def __nature_reserve_with_single_depth(self):
         for i in range(self.hsp.n_areas):
             variables = [self.variables.nat_depth[i][d].id for d in range(self.hsp.max_nature_reserve_depth + 1)]
-            cnf = CardEnc.equals(variables, bound=1, encoding=EncType.pairwise)
-            for clause in cnf.clauses:
+            clauses = CardEnc.equals(variables, encoding=EncType.pairwise, bound=1, top_id=len(self.variables)).clauses
+            for clause in clauses:
                 self.formula.append([-self.variables.nat[i].id] + clause)
 
     def __single_depth_zero(self):
         variables = [self.variables.nat_depth[i][0].id for i in range(self.hsp.n_areas)]
-        cnf = CardEnc.atmost(variables, bound=1, encoding=EncType.pairwise)
-        for clause in cnf.clauses:
+        clauses = CardEnc.atmost(variables, encoding=EncType.pairwise, bound=1, top_id=len(self.variables)).clauses
+        for clause in clauses:
             self.formula.append(clause)
 
     def __adjacent_depth_propagation(self):
