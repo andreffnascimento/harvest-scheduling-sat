@@ -31,6 +31,7 @@ The project's statement can be seen in the [statement.pdf](statement.pdf) file.
 # Technologies
 
 - [Python](https://www.python.org/)
+- [PySAT](https://pysathq.github.io/)
 
 <br>
 <br>
@@ -40,7 +41,7 @@ The project's statement can be seen in the [statement.pdf](statement.pdf) file.
 # Execution
 The project can be executed using the following command:
 
-```proj1 < instance.hsp > solution.txt```
+```proj1 instance.hsp solution.txt```
 
 <br>
 <br>
