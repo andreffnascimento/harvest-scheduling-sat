@@ -55,7 +55,7 @@ class HSPFormula:
     def __harvest_at_most_once(self) -> None:
         for i in range(self.hsp.n_areas):
             variables = [self.variables.harv[i][t].id for t in range(self.hsp.n_periods)]
-            clauses = CardEnc.atmost(variables, encoding=EncType.totalizer, bound=1, top_id=len(self.variables)).clauses
+            clauses = CardEnc.atmost(variables, encoding=EncType.bitwise, bound=1, top_id=len(self.variables)).clauses
             self.__add_aux_variables(clauses)
             for clause in clauses:
                 self.formula.append(clause)
