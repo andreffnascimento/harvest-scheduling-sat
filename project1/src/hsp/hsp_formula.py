@@ -85,25 +85,25 @@ class HSPFormula:
         self.__single_depth_zero()
         self.__adjacent_depth_propagation()
 
-    def __non_nature_reserve_without_depth(self):
+    def __non_nature_reserve_without_depth(self) -> None:
         for i in range(self.hsp.n_areas):
             for d in range(self.hsp.max_nature_reserve_depth + 1):
                 self.formula.append([self.variables.nat[i].id, -self.variables.nat_depth[i][d].id])
 
-    def __nature_reserve_with_single_depth(self):
+    def __nature_reserve_with_single_depth(self) -> None:
         for i in range(self.hsp.n_areas):
             variables = [self.variables.nat_depth[i][d].id for d in range(self.hsp.max_nature_reserve_depth + 1)]
             clauses = CardEnc.equals(variables, encoding=EncType.pairwise, bound=1, top_id=len(self.variables)).clauses
             for clause in clauses:
                 self.formula.append([-self.variables.nat[i].id] + clause)
 
-    def __single_depth_zero(self):
+    def __single_depth_zero(self) -> None:
         variables = [self.variables.nat_depth[i][0].id for i in range(self.hsp.n_areas)]
         clauses = CardEnc.atmost(variables, encoding=EncType.pairwise, bound=1, top_id=len(self.variables)).clauses
         for clause in clauses:
             self.formula.append(clause)
 
-    def __adjacent_depth_propagation(self):
+    def __adjacent_depth_propagation(self) -> None:
         for i in range(self.hsp.n_areas):
             for d in range(1, self.hsp.max_nature_reserve_depth + 1):
                 variables = [self.variables.nat_depth[j][d - 1].id for j in map(lambda area: area.id - 1, self.hsp.areas[i].adjacencies)]

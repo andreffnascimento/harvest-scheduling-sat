@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if   [ $# = 0 ]; then
+    python3 project2/src/main.py
+elif [ $# = 1 ]; then
+    python3 project2/src/main.py < $1
+elif [ $# = 2 ]; then
+    python3 project2/src/main.py < $1 > $2
+else
+    echo "Usage: ./proj2 [input] [output]"
+    exit 1
+fi

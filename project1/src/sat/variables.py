@@ -6,7 +6,7 @@ class VariableGenerator:
         pass
 
     @staticmethod
-    def generate_var():
+    def generate_var() -> int:
         id = VariableGenerator.current_id
         VariableGenerator.current_id += 1
         VariableGenerator.id_size = len(str(VariableGenerator.current_id - 1))
