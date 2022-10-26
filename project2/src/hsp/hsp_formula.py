@@ -41,9 +41,9 @@ class HSPFormula:
     def __harvest_profit_relation(self) -> None:
         for i in range(self.hsp.n_areas):
             self.solver.add(Implies(self.vars.harv[i] == IntVal("0"), self.vars.prof[i] == IntVal("0")))
-            for j in range(self.hsp.n_periods):
-                profit = self.hsp.areas[i].profits[j]
-                self.solver.add(Implies(self.vars.harv[i] == IntVal(str(j + 1)), self.vars.prof[i] == IntVal(str(profit))))
+            for t in range(self.hsp.n_periods):
+                profit = self.hsp.areas[i].profits[t]
+                self.solver.add(Implies(self.vars.harv[i] == IntVal(str(t + 1)), self.vars.prof[i] == IntVal(str(profit))))
 
     def __harvest_adjacent_at_same_time(self) -> None:
         for i in range(self.hsp.n_areas):

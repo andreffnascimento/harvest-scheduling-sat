@@ -27,7 +27,12 @@ class HSPOutput:
         return str(profit) + '\n'
 
     def __period_harvested_str(self) -> str:
-        return ''
+        period_harvested_str = ''
+        for t in range(self.hsp.n_periods):
+            harvested = tuple(map(lambda name: str(name)[5:], filter(lambda var: self.model[var] == t, self.vars.harv)))
+            period_harvested_str += str(len(harvested)) + ' ' + ' '.join(harvested) + '\n'
+        return period_harvested_str
 
     def __nature_reserve_str(self) -> str:
-        return ''
+        nature_reserves = tuple(map(lambda name: str(name)[4:], filter(lambda var: not(self.model[var] == 0), self.vars.nat)))
+        return str(len(nature_reserves)) + ' ' + ' '.join(nature_reserves)
