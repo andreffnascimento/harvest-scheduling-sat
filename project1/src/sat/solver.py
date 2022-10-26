@@ -8,7 +8,7 @@ class Solver:
         self.result = None
         self.cost = None
 
-    def solve(self) -> tuple[int]|None:
+    def solve(self) -> tuple[int]:
         with RC2(self.formula, solver='gluecard4', adapt=True, exhaust=True, minz=True) as solver:
             result = solver.compute()
             self.cost = solver.cost

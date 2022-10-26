@@ -41,7 +41,7 @@ class HSPVariables:
            if variable_id > len(self.__variables):
                 self.aux += (self.__create_variable('Aux[' + str(len(self.aux) + 1) + ']'),)
 
-    def set_result(self, result:tuple[int]|None) -> None:
+    def set_result(self, result:tuple[int]) -> None:
         if result == None:
             return
         for i in range(len(result)):
