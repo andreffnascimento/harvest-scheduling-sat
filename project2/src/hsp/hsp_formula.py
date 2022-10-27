@@ -11,12 +11,6 @@ class HSPFormula:
         self.solver = Optimize()
         self.__create_formula()
 
-    def __str__(self) -> str:
-        raise NotImplementedError
-
-    def __repr__(self) -> str:
-        raise NotImplementedError
-
     def get_solver(self) -> Optimize:
         return self.solver
 
@@ -52,18 +46,18 @@ class HSPFormula:
 
     def __nature_reserve_depth_bound(self) -> None:
         for i in range(self.hsp.n_areas):
-            self.solver.add(self.vars.nat[0] >= IntVal('0'))
-            self.solver.add(self.vars.nat[0] <= IntVal(str(self.hsp.n_areas)))
+            self.solver.add(self.vars.nat[0] >= IntVal('-1'))
+            self.solver.add(self.vars.nat[0] <= IntVal(str(self.hsp.max_nature_reserve_depth)))
 
     def __nature_reserve_size_relation(self) -> None:
         for i in range(self.hsp.n_areas):
             area_size = self.hsp.areas[i].size
-            self.solver.add(Implies(self.vars.nat[i] == IntVal('0'), self.vars.natsize[i] == IntVal('0')))
-            self.solver.add(Implies(self.vars.nat[i] != IntVal('0'), self.vars.natsize[i] == IntVal(str(area_size))))
+            self.solver.add(Implies(self.vars.nat[i] == IntVal('-1'), self.vars.natsize[i] == IntVal('0')))
+            self.solver.add(Implies(self.vars.nat[i] != IntVal('-1'), self.vars.natsize[i] == IntVal(str(area_size))))
 
     def __nature_reserve_not_harvested(self) -> None:
         for i in range(self.hsp.n_areas):
-            self.solver.add(Implies(self.vars.nat[i] != IntVal('0'), self.vars.harv[i] == IntVal('0')))
+            self.solver.add(Implies(self.vars.nat[i] != IntVal('-1'), self.vars.harv[i] == IntVal('0')))
 
     def __nature_reserve_minimum_size(self) -> None:
         self.solver.add(Sum(self.vars.natsize) >= IntVal(str(self.hsp.min_nature_reserve_area)))

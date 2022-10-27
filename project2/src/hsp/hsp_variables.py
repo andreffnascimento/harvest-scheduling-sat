@@ -19,7 +19,7 @@ class HSPVariables:
         return hsp_variables
 
     def __repr__(self) -> str:
-        return str(self.harv + self.prof)
+        return str(self.get_variables())
 
     def get_variables(self) -> tuple:
         return self.harv + self.prof + self.nat + self.natsize

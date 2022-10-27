@@ -12,9 +12,6 @@ class HSPOutput:
 
     def __str__(self) -> str:
         return self.__profit_str() + self.__period_harvested_str() + self.__nature_reserve_str()
-        
-    def __repr__(self) -> str:
-        raise NotImplementedError
 
     def variable_values(self) -> str:
         hsp_variables = ('=' * 80) + '\n\tVariable Results\n' + ('=' * 80) + '\n'
@@ -34,5 +31,5 @@ class HSPOutput:
         return period_harvested_str
 
     def __nature_reserve_str(self) -> str:
-        nature_reserves = tuple(map(lambda name: str(name)[4:], filter(lambda var: not(self.model[var] == 0), self.vars.nat)))
+        nature_reserves = tuple(map(lambda name: str(name)[4:], filter(lambda var: not(self.model[var] == -1), self.vars.nat)))
         return str(len(nature_reserves)) + ' ' + ' '.join(nature_reserves)
