@@ -6,7 +6,7 @@ from hsp.hsp_output import HSPOutput
 from hsp.hsp_variables import HSPVariables
 
 
-__debug = True
+__debug = False
 
 def __debug_log(argument) -> None:
    if __debug:

@@ -10,6 +10,7 @@ class HSPVariables:
         self.prof = ()
         self.nat = ()
         self.natsize = ()
+        self.root = None
         self.__create_variables()
 
     def __str__(self) -> str:
@@ -22,7 +23,7 @@ class HSPVariables:
         return str(self.get_variables())
 
     def get_variables(self) -> tuple:
-        return self.harv + self.prof + self.nat + self.natsize
+        return self.harv + self.prof + self.nat + self.natsize + (self.root,)
 
     def __create_variables(self) -> None:
         for area in self.hsp.areas:
@@ -30,3 +31,4 @@ class HSPVariables:
             self.prof    += (Int(f'Prof_{area.id}'),)
             self.nat     += (Int(f'Nat_{area.id}'),)
             self.natsize += (Int(f'NatSize_{area.id}'),)
+            self.root     =  Int(f'Root')

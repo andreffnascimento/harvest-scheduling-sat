@@ -79,5 +79,17 @@ class HarvestSchedulingProblem:
                 hsp.areas[area_id].profits += (int(period_profits[area_id]),)
 
         hsp.min_nature_reserve_area = int(input())
+        # hsp.max_nature_reserve_depth = HarvestSchedulingProblem.__calculate_maximum_nature_reserve_depth(hsp.areas, hsp.min_nature_reserve_area)
         hsp.max_nature_reserve_depth = hsp.n_areas // 2
         return hsp
+
+    @staticmethod
+    def __calculate_maximum_nature_reserve_depth(areas, min_nature_reserve_area) -> int:
+        areas_size = sorted([area.size for area in areas])
+        minimum_size = 0
+        minimum_depth = 0
+        for size in areas_size:
+            minimum_size += size
+            minimum_depth += 1
+            if minimum_size >= min_nature_reserve_area:
+                return minimum_size + 1
