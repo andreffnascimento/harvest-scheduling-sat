@@ -25,7 +25,7 @@ class HSPOutput:
 
     def __period_harvested_str(self) -> str:
         period_harvested_str = ''
-        for t in range(self.hsp.n_periods):
+        for t in range(1, self.hsp.n_periods + 1):
             harvested = tuple(map(lambda name: str(name)[5:], filter(lambda var: self.model[var] == t, self.vars.harv)))
             period_harvested_str += str(len(harvested)) + ' ' + ' '.join(harvested) + '\n'
         return period_harvested_str
