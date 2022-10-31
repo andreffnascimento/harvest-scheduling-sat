@@ -9,6 +9,7 @@ class HSPFormula:
         self.hsp = hsp
         self.vars = vars
         self.solver = Optimize()
+        self.solver.set(priority='pareto', incremental=True)
         self.__create_formula()
 
     def get_solver(self) -> Optimize:

@@ -9,4 +9,3 @@
 tests/check/*
 tests/hyp/*
 tests/overall.txt
-tests/versions/**
